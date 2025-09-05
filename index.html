@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TherAIpy Demo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-b from-gray-900 to-gray-800 text-white min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+        <div class="flex flex-col items-center space-y-8">
+            <h1 class="text-4xl font-bold text-center mb-8">TherAIpy</h1>
+            
+            <!-- Chat Display -->
+            <div id="chatDisplay" class="w-full max-w-2xl h-96 bg-gray-800/50 rounded-lg p-4 overflow-y-auto space-y-4">
+            </div>
+
+            <!-- Input Area -->
+            <div class="w-full max-w-2xl flex gap-2">
+                <input 
+                    type="text" 
+                    id="userInput" 
+                    class="flex-1 px-4 py-2 rounded-lg bg-gray-700 text-white"
+                    placeholder="Type your message..."
+                >
+                <button 
+                    onclick="sendMessage()"
+                    class="px-6 py-2 bg-blue-500 hover:bg-blue-600 rounded-lg"
+                >
+                    Send
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const chatDisplay = document.getElementById('chatDisplay');
+        const userInput = document.getElementById('userInput');
+
+        function addMessage(text, isUser = false) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `p-3 rounded-lg ${isUser ? 'bg-blue-500 ml-12' : 'bg-gray-700 mr-12'}`;
+            messageDiv.textContent = text;
+            chatDisplay.appendChild(messageDiv);
+            chatDisplay.scrollTop = chatDisplay.scrollHeight;
+        }
+
+        async function sendMessage() {
+            const text = userInput.value.trim();
+            if (!text) return;
+
+            addMessage(text, true);
+            userInput.value = '';
+
+            try {
+                const response = await fetch('http://localhost:8000/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        text: text,
+                        language: 'en'
+                    })
+                });
+
+                const data = await response.json();
+                addMessage(data.text);
+                if (data.exercise) {
+                    addMessage(`Exercise: ${data.exercise}`);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                addMessage('Sorry, I had trouble processing that request.');
+            }
+        }
+
+        userInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+    </script>
+</body>
+</html>
