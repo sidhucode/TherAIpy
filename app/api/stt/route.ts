@@ -1,46 +1,80 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { exec } from 'child_process';
+import { promisify } from 'util';
+import { writeFile, unlink } from 'fs/promises';
+import path from 'path';
+import os from 'os';
+
+export const runtime = "nodejs";
+
+const execAsync = promisify(exec);
+const MAX_FILE_SIZE = 25 * 1024 * 1024; // 25MB
 
 export async function POST(request: NextRequest) {
+  let tempFilePath: string | null = null;
+  
   try {
-    // Get audio from form data
     const formData = await request.formData();
-    const audioFile = formData.get('audio') as File;
+    const file = formData.get('file') as File;
     
-    if (!audioFile) {
+    if (!file) {
       return NextResponse.json(
         { error: 'No audio file provided' },
         { status: 400 }
       );
     }
 
-    // TODO: Implement actual STT using OpenAI Whisper or Google Cloud Speech
-    // For now, return a mock response for testing
+    if (file.size > MAX_FILE_SIZE) {
+      return NextResponse.json(
+        { error: 'Audio file too large. Maximum size is 25MB' },
+        { status: 400 }
+      );
+    }
+
+    // Save the file temporarily
+    const bytes = await file.arrayBuffer();
+    const buffer = Buffer.from(bytes);
     
-    // Mock implementation - replace with actual STT service
-    const mockResponses = [
-      "I've been feeling really anxious lately about work",
-      "I don't know how to cope with all this stress",
-      "Sometimes I feel overwhelmed and don't know what to do",
-      "I think I need help managing my emotions",
-      "Can you help me understand why I feel this way?"
-    ];
+    // Create temp file path
+    const tempDir = os.tmpdir();
+    const fileName = `audio_${Date.now()}.webm`;
+    tempFilePath = path.join(tempDir, fileName);
     
-    const text = mockResponses[Math.floor(Math.random() * mockResponses.length)];
+    // Write file to temp directory
+    await writeFile(tempFilePath, buffer);
     
-    // Simulate processing delay
-    await new Promise(resolve => setTimeout(resolve, 500));
+    // Execute the Python Vosk STT script
+    const pythonScript = path.join(process.cwd(), 'python', 'stt_vosk_api.py');
+    const { stdout, stderr } = await execAsync(`python3 "${pythonScript}" "${tempFilePath}"`);
     
-    return NextResponse.json({ 
-      text,
-      confidence: 0.95,
-      language: 'en'
-    });
+    if (stderr && !stderr.includes('UserWarning')) {
+      console.error('STT script error:', stderr);
+    }
+    
+    // Parse the JSON output
+    const result = JSON.parse(stdout);
+    
+    if (!result.success) {
+      throw new Error(result.error || 'Transcription failed');
+    }
+    
+    // Return in OpenAI-compatible format
+    return NextResponse.json({ text: result.text });
     
   } catch (error: any) {
     console.error('STT error:', error);
     return NextResponse.json(
-      { error: 'Failed to transcribe audio' },
+      { error: error.message || 'Failed to transcribe audio' },
       { status: 500 }
     );
+  } finally {
+    // Clean up temp file
+    if (tempFilePath) {
+      try {
+        await unlink(tempFilePath);
+      } catch (e) {
+        // Ignore cleanup errors
+      }
+    }
   }
 }

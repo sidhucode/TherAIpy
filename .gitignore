@@ -41,6 +41,11 @@ __pycache__/
 venv/
 ENV/
 
+# Models (large files)
+models/
+*.model
+*.zip
+
 # Temporary files
 temp/
 *.wav

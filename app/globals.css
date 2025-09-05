@@ -1,3 +1,197 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* TherAIpy Design System - Therapeutic, calming, professional */
+
+@layer base {
+  :root {
+    /* Core therapeutic palette */
+    --background: 235 100% 98%;
+    --foreground: 240 15% 20%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 240 15% 20%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 15% 20%;
+
+    /* Therapeutic primary - calming violet */
+    --primary: 240 42% 59%;
+    --primary-foreground: 0 0% 100%;
+    --primary-glow: 240 55% 70%;
+
+    /* Therapeutic secondary - soft mint */
+    --secondary: 158 100% 75%;
+    --secondary-foreground: 240 15% 20%;
+
+    /* Therapeutic accent - bright aqua */
+    --accent: 195 77% 71%;
+    --accent-foreground: 240 15% 20%;
+
+    --muted: 235 50% 96%;
+    --muted-foreground: 240 10% 50%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 235 30% 90%;
+    --input: 235 30% 94%;
+    --ring: 240 42% 59%;
+
+    --radius: 1rem;
+  }
+
+  .dark {
+    /* Dark mode therapeutic palette */
+    --background: 240 15% 8%;
+    --foreground: 235 100% 98%;
+
+    --card: 240 15% 10%;
+    --card-foreground: 235 100% 98%;
+
+    --popover: 240 15% 10%;
+    --popover-foreground: 235 100% 98%;
+
+    --primary: 240 55% 70%;
+    --primary-foreground: 240 15% 8%;
+    --primary-glow: 240 42% 59%;
+
+    --secondary: 158 60% 45%;
+    --secondary-foreground: 235 100% 98%;
+
+    --accent: 195 77% 61%;
+    --accent-foreground: 240 15% 8%;
+
+    --muted: 240 15% 15%;
+    --muted-foreground: 240 10% 70%;
+
+    --destructive: 0 62.8% 50%;
+    --destructive-foreground: 235 100% 98%;
+
+    --border: 240 15% 20%;
+    --input: 240 15% 18%;
+    --ring: 240 55% 70%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* Therapeutic animations */
+@keyframes breathe {
+  0%, 100% { transform: scale(1); opacity: 0.9; }
+  50% { transform: scale(1.02); opacity: 1; }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 20px hsl(var(--primary) / 0.3); }
+  50% { box-shadow: 0 0 40px hsl(var(--primary) / 0.5); }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Utility classes */
+.breathe {
+  animation: breathe 4s ease-in-out infinite;
+}
+
+.pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+.fade-in {
+  animation: fade-in 0.5s ease-out;
+}
+
+/* Gradients */
+.bg-gradient-hero {
+  background: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--accent)));
+}
+
+.bg-gradient-calm {
+  background: linear-gradient(180deg, hsl(var(--background)), hsl(var(--muted)));
+}
+
+.bg-gradient-feature {
+  background: linear-gradient(45deg, hsl(var(--secondary) / 0.1), hsl(var(--accent) / 0.1));
+}
+
+/* Shadows */
+.shadow-therapeutic {
+  box-shadow: 0 10px 40px -10px hsl(var(--primary) / 0.2);
+}
+
+.shadow-glow {
+  box-shadow: 0 0 40px hsl(var(--primary-glow) / 0.3);
+}
+
+.shadow-soft {
+  box-shadow: 0 4px 20px hsl(var(--primary) / 0.1);
+}
+
+/* Voice interface specific */
+.voice-bubble {
+  @apply bg-card/80 backdrop-blur-sm rounded-2xl p-4 shadow-soft;
+}
+
+.mic-button {
+  @apply relative overflow-hidden transition-all duration-300;
+}
+
+.mic-button::before {
+  content: '';
+  @apply absolute inset-0 bg-gradient-hero opacity-0 transition-opacity duration-300;
+}
+
+.mic-button:hover::before {
+  @apply opacity-20;
+}
+
+.mic-button.recording {
+  @apply scale-110;
+}
+
+.mic-button.recording::after {
+  content: '';
+  @apply absolute inset-0 rounded-full;
+  animation: pulse-glow 1.5s ease-in-out infinite;
+}
+
+/* Message bubbles */
+.message-user {
+  @apply bg-primary/10 text-foreground rounded-2xl rounded-tr-sm;
+}
+
+.message-assistant {
+  @apply bg-secondary/10 text-foreground rounded-2xl rounded-tl-sm;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-muted/50;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-primary/30;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-primary/50;
+}

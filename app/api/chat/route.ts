@@ -20,8 +20,48 @@ Important guidelines:
 
 Remember: You are a supportive companion, not a replacement for professional therapy.`;
 
-// Mock therapy responses for testing (replace with actual LLM)
-const generateTherapyResponse = (userText: string): string => {
+// Generate therapy response using Groq or fallback to mock
+async function generateTherapyResponse(userText: string, messages: any[] = []): Promise<string> {
+  // Try Groq first if API key is available
+  if (process.env.GROQ_API_KEY) {
+    try {
+      const groqMessages = [
+        { role: 'system', content: THERAPY_SYSTEM_PROMPT },
+        ...messages.map((msg: any) => ({
+          role: msg.role === 'user' ? 'user' : 'assistant',
+          content: msg.text || msg.content
+        })),
+        { role: 'user', content: userText }
+      ];
+
+      const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${process.env.GROQ_API_KEY}`
+        },
+        body: JSON.stringify({
+          model: 'llama-3.3-70b-versatile', // Updated Llama 3.3 model
+          messages: groqMessages,
+          temperature: 0.7,
+          max_tokens: 150,
+          presence_penalty: 0.6,
+          frequency_penalty: 0.3
+        })
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        return data.choices[0].message.content;
+      } else {
+        console.error('Groq API error:', await response.text());
+      }
+    } catch (error) {
+      console.error('Groq API error:', error);
+    }
+  }
+
+  // Fallback to mock responses for demo/testing
   const lowerText = userText.toLowerCase();
   
   if (lowerText.includes('anxious') || lowerText.includes('anxiety')) {
@@ -36,13 +76,25 @@ const generateTherapyResponse = (userText: string): string => {
     return "I can hear that you're going through a difficult time. Your feelings are valid. What has been weighing on you the most lately?";
   }
   
+  if (lowerText.includes('angry') || lowerText.includes('frustrated')) {
+    return "I can sense your frustration. It's okay to feel angry. Let's explore what triggered these feelings and how we can work through them together.";
+  }
+  
+  if (lowerText.includes('lonely') || lowerText.includes('alone')) {
+    return "Feeling lonely can be really tough. You're not alone in this conversation. What would help you feel more connected right now?";
+  }
+  
+  if (lowerText.includes('hello') || lowerText.includes('hi')) {
+    return "Hello! I'm here to listen and support you. How are you feeling today? Take your time to share whatever's on your mind.";
+  }
+  
   if (lowerText.includes('help')) {
     return "I'm here to support you. Let's work through this together. What would you like to focus on today?";
   }
   
   // Default response
   return "Thank you for sharing that with me. Can you tell me more about how this is affecting you?";
-};
+}
 
 export async function POST(request: NextRequest) {
   try {
@@ -55,33 +107,8 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // TODO: Integrate with OpenAI GPT-4 or similar LLM
-    // Example integration:
-    /*
-    const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
-    
-    const completion = await openai.chat.completions.create({
-      model: "gpt-4",
-      messages: [
-        { role: "system", content: THERAPY_SYSTEM_PROMPT },
-        ...messages.map(m => ({ 
-          role: m.role, 
-          content: m.text 
-        })),
-        { role: "user", content: text }
-      ],
-      temperature: 0.7,
-      max_tokens: 150, // Keep responses concise for voice
-    });
-    
-    const response = completion.choices[0].message.content;
-    */
-    
-    // For now, use mock responses
-    const response = generateTherapyResponse(text);
-    
-    // Simulate processing delay
-    await new Promise(resolve => setTimeout(resolve, 800));
+    // Generate response using OpenAI or mock
+    const response = await generateTherapyResponse(text, messages);
     
     return NextResponse.json({ 
       response,
