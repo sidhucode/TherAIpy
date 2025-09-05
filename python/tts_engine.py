@@ -9,9 +9,15 @@ import sys
 import json
 import uuid
 import time
+import warnings
 from pathlib import Path
 from typing import Optional, Dict, Any
 from datetime import datetime, timedelta
+
+# Suppress warnings when used as API
+if not os.environ.get('DEBUG_TTS'):
+    warnings.filterwarnings("ignore")
+    os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
 # Add parent directory to path for imports
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -32,9 +38,18 @@ class TTSEngine:
         self.temp_dir.mkdir(parents=True, exist_ok=True)
         self.cleanup_age = timedelta(minutes=cleanup_age_minutes)
         
-        # Initialize Kokoro pipeline
-        print("Initializing Kokoro TTS pipeline...")
+        # Initialize Kokoro pipeline (suppress output when used as API)
+        import os
+        if not os.environ.get('DEBUG_TTS'):
+            import sys
+            import io
+            old_stdout = sys.stdout
+            sys.stdout = io.StringIO()
+        
         self.pipeline = KPipeline(lang_code='a')
+        
+        if not os.environ.get('DEBUG_TTS'):
+            sys.stdout = old_stdout
         
     def cleanup_old_files(self):
         """Remove old audio files from temp directory"""
@@ -44,9 +59,11 @@ class TTSEngine:
             if now - file_age > self.cleanup_age:
                 try:
                     file.unlink()
-                    print(f"Cleaned up old file: {file.name}")
+                    if os.environ.get('DEBUG_TTS'):
+                        print(f"Cleaned up old file: {file.name}")
                 except Exception as e:
-                    print(f"Error cleaning up {file.name}: {e}")
+                    if os.environ.get('DEBUG_TTS'):
+                        print(f"Error cleaning up {file.name}: {e}")
     
     def generate_audio(self, text: str, voice: str = "af_heart") -> Dict[str, Any]:
         """

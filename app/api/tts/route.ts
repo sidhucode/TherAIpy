@@ -64,7 +64,7 @@ export async function POST(request: NextRequest) {
     }, 1000); // Clean up after 1 second
     
     // Return audio file directly
-    return new NextResponse(audioBuffer, {
+  return new NextResponse(new Uint8Array(audioBuffer), {
       status: 200,
       headers: {
         'Content-Type': 'audio/wav',
@@ -100,7 +100,7 @@ export async function GET(request: NextRequest) {
     const audioPath = path.join(process.cwd(), 'temp', 'audio', `${audioId}.wav`);
     const audioBuffer = await fs.readFile(audioPath);
     
-    return new NextResponse(audioBuffer, {
+  return new NextResponse(new Uint8Array(audioBuffer), {
       status: 200,
       headers: {
         'Content-Type': 'audio/wav',
