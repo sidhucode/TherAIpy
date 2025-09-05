@@ -37,15 +37,16 @@ TherAIpy delivers AI-powered therapy with an **audio-first approach**, offering 
   - Direct streaming to browser
   - Automatic cleanup of temporary files (5-minute retention)
 
-- **Speech-to-Text (STT) [Mock]**
+- **Speech-to-Text (STT)**
   - Audio file uploads supported (webm/opus)
   - Returns transcription with confidence score
   - Ready for integration with Whisper or Google Cloud
 
-- **AI Chat/Therapy [Mock]**
+- **AI Chat/Therapy**
   - CBT-based system prompt
-  - Context-aware responses with message history
-  - Session management support
+    (In-Progress)
+    - Context-aware responses with message history
+    - Session management support
 
 - **Voice Interface & Frontend Components**
   - Browser microphone recording with noise suppression & echo cancellation
@@ -61,8 +62,8 @@ TherAIpy delivers AI-powered therapy with an **audio-first approach**, offering 
 ### ⚠️ Partially Implemented
 - Avatar generation API structure (ready for D-ID/HeyGen integration)
 
-### ❌ Not Yet Implemented
-- Real STT integration (Whisper/Google Cloud)
+### Future Work
+- Facial Recognition / Emotional Sentiment Analysis
 - GPT-4 integration for therapy responses
 - Real-time avatar video generation
 - Advanced streaming, WebSocket communication, session persistence
