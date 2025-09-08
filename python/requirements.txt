@@ -1,0 +1,4 @@
+kokoro-tts
+soundfile
+torch
+Flask
