@@ -50,7 +50,10 @@ export const HeroSection = () => {
             <Image 
               src={heroIllustration} 
               alt="TherAIpy AI wellness coach illustration" 
-              className="w-full h-auto rounded-2xl shadow-therapeutic"
+              width={600}
+              height={600}
+              className="w-full h-auto rounded-2xl shadow-therapeutic object-cover"
+              priority
             />
           </div>
           {/* Background glow effect */}

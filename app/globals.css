@@ -130,12 +130,12 @@
 
   /* Therapeutic breathing animation */
   .breathe {
-    animation: var(--transition-breathe);
-    transform: scale(1);
+    animation: breathe 4s ease-in-out infinite;
   }
 
-  .breathe:hover {
-    transform: scale(1.05);
+  @keyframes breathe {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.02); }
   }
 }
 

@@ -17,10 +17,10 @@ export const DemoSection = () => {
         
         <Card className="bg-card/80 backdrop-blur-lg border-border/50 shadow-lg overflow-hidden">
           <CardContent className="p-8 lg:p-12">
-            <div className="aspect-w-16 aspect-h-9 rounded-lg overflow-hidden bg-black border border-border/50">
+            <div className="relative w-full rounded-lg overflow-hidden bg-black/10 border border-border/50" style={{ paddingBottom: '56.25%' }}>
               {/* Placeholder for a video or interactive demo */}
-              <div className="flex items-center justify-center h-full">
-                <p className="text-muted-foreground">Interactive Demo Coming Soon</p>
+              <div className="absolute inset-0 flex items-center justify-center">
+                <p className="text-muted-foreground text-lg">Interactive Demo Coming Soon</p>
               </div>
             </div>
           </CardContent>
