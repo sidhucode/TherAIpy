@@ -2,11 +2,5 @@
   "installCommand": "npm install --legacy-peer-deps",
   "buildCommand": "npm run build",
   "outputDirectory": ".next",
-  "framework": "nextjs",
-  "functions": {
-    "python/tts_engine.py": {
-      "maxDuration": 30,
-      "runtime": "python3.9"
-    }
-  }
+  "framework": "nextjs"
 }
