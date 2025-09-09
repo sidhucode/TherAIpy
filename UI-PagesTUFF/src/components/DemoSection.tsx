@@ -1,6 +1,5 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { TherapeuticButton } from "@/components/ui/button-variants";
-import { Link } from "react-router-dom";
 
 export const DemoSection = () => {
   return (
@@ -48,11 +47,9 @@ export const DemoSection = () => {
         </Card>
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <Link to="/demo">
-            <TherapeuticButton variant="hero" size="lg">
-              ▶ Try TherAIpy Now
-            </TherapeuticButton>
-          </Link>
+          <TherapeuticButton variant="hero" size="lg">
+            ▶ Try TherAIpy Now
+          </TherapeuticButton>
           <TherapeuticButton variant="calm" size="lg">
             Learn More
           </TherapeuticButton>

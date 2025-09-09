@@ -18,7 +18,9 @@
     "jsx": "preserve",
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./*"]
+      "@/*": [
+        "app/*"
+      ]
     },
     "plugins": [
       {
@@ -29,11 +31,16 @@
   "include": [
     "next-env.d.ts",
     ".next/types/**/*.ts",
-    "**/*.ts",
-    "**/*.tsx"
+    "app/**/*.ts",
+    "app/**/*.tsx",
+    "*.ts",
+    "*.tsx",
+    "*.js",
+    "*.mjs"
   ],
   "exclude": [
     "node_modules",
+    "UI-PagesTUFF/**/*",
     "UI-PagesTUFF"
   ]
 }

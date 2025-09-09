@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { TherapeuticButton } from "@/components/ui/button-variants";
 import heroIllustration from "@/assets/hero-illustration.jpg";
 
@@ -46,7 +47,7 @@ export const HeroSection = () => {
         {/* Right: Hero Illustration */}
         <div className="relative">
           <div className="relative z-10 breathe">
-            <img 
+            <Image 
               src={heroIllustration} 
               alt="TherAIpy AI wellness coach illustration" 
               className="w-full h-auto rounded-2xl shadow-therapeutic"

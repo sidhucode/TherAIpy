@@ -1,23 +1,12 @@
 {
-  "version": 2,
-  "builds": [
-    {
-      "src": "package.json",
-      "use": "@vercel/next"
-    },
-    {
-      "src": "python/tts_engine.py",
-      "use": "@vercel/python"
+  "installCommand": "npm install --legacy-peer-deps",
+  "buildCommand": "npm run build",
+  "outputDirectory": ".next",
+  "framework": "nextjs",
+  "functions": {
+    "python/tts_engine.py": {
+      "maxDuration": 30,
+      "runtime": "python3.9"
     }
-  ],
-  "routes": [
-    {
-      "src": "/api/tts",
-      "dest": "/python/tts_engine.py"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/$1"
-    }
-  ]
+  }
 }
